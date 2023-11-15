@@ -1,0 +1,226 @@
+\documentclass[
+11pt, % The default document font size, options: 10pt, 11pt, 12pt
+codirector, % Uncomment to add a codirector to the title page
+]{charter} 
+\usepackage{enumitem}
+\usepackage{pdflscape}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, backgrounds, fit}
+\usepackage{fontawesome5}
+\usepackage{tikz,tkz-tab}
+\usepackage{booktabs} % Para tablas más elegantes
+\usepackage{array}
+\usepackage{colortbl} % for coloring the cells
+\usepackage{hhline} % for better lines
+\usepackage{fmtcount}
+
+\usetikzlibrary{positioning, arrows.meta, backgrounds, fit}
+\usetikzlibrary{matrix,arrows, positioning,shadows,shadings,backgrounds, calc, shapes, tikzmark}
+
+
+
+\makeatletter
+\newcommand{\mytwodigits}[1]{\two@digits{#1}}
+\makeatother
+
+\newcounter{reqCounter}
+\setcounter{reqCounter}{0}
+
+
+% Completar los siguintes Campos
+\materia{Ingeniería de Software}
+\bimestre{tercer bimestre}
+\docentes{Alejandro Permingeat; Esteban	Volentini; Mariano Finochietto y Santiago Salamandri}
+\titulo{Casos de Uso  \bigskip para el Software MADCASE}
+\posgrado{Carrera de Especialización en Sistemas Embebidos} 
+\autor{Mg. Luis Alberto Gómez Parada} 
+\director{Ing. Juan Manuel Cruz}
+\pertenenciaDirector{FIUBA} 
+\codirector{} 
+\pertenenciaCoDirector{}
+\cliente{}
+\empresaCliente{Centro del Clima y la Resiliencia CR2, Universidad de Chile}
+\fechaINICIO{5 de noviembre de 2023}		%Fecha de entrega
+\CODrequerimiento{MADCASE-RS01-USO}
+
+
+\begin{document}
+
+\maketitle
+%\tableofcontents
+
+\newpage
+
+\section*{Registros de cambios}
+\label{sec:registro}
+
+
+\begin{table}[ht]
+	\label{tab:registro}
+	\centering
+	\begin{tabularx}{\linewidth}{@{}|c|X|c|@{}}
+		\hline
+		\rowcolor[HTML]{C0C0C0} 
+		Revisión & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}Detalles de los cambios realizados} & Fecha      \\ \hline
+		0      & Creación del documento                                 &\fechaInicioName \\ \hline
+		\hline
+		
+	\end{tabularx}
+	\label{sec:cierre}
+\end{table}
+
+\pagebreak
+
+
+\section{Introducción a los casos de uso de MADCASE}
+\label{sec:org60390fa}
+
+
+
+MADCASE (Micro Administración de Datos de Calidad del Aire en Sistemas Embebidos) es un software diseñado para enfrentar  la monitorización y análisis de la calidad del aire, enfocándose particularmente en la medición de partículas finas MP2,5 en sistemas embebidos. Este documento detalla tres casos de uso esenciales que ilustran las interacciones funcionales entre MADCASE, con sus usuarios. Estos casos de uso permiten comprender cómo MADCASE ejecuta operaciones fundamentales en el monitoreo ambiental, ofreciendo soluciones para la recopilación, administración y análisis de datos de calidad del aire.
+
+Los casos de uso presentados incluyen \textbf{\textit{``Monitoreo de la Calidad del Aire''}}, \textbf{\textit{``Mantenimiento y Calibración de Sensores''}} y \textbf{\textit{``Consulta y Gestión de Datos Almacenados''}}. Cada uno se detalla en los Cuadros 2, 3 y 4, respectivamente, siguiendo los conceptos establecidos en el Cuadro 1.
+
+Estos casos de uso proporcionan una visión clara y detallada de la funcionalidad esperada de MADCASE en diversas situaciones. Son elementos clave para orientar el desarrollo del software, garantizando que MADCASE satisfaga las necesidades y expectativas de sus usuarios finales. Además, desempeñan un papel vital en la contribución a la mejora de la calidad del aire en zonas urbanas, reforzando su importancia en el ámbito del monitoreo ambiental.
+
+\bigskip  \bigskip
+
+\begin{table}[h!]
+	\caption{Descripción de los campos de Caso de Uso}
+	\centering
+	\begin{tabular}{ | m{4.1cm} | m{10cm} | }
+		\hline
+		\rowcolor{gray!50} % Coloring the first row
+		\textbf{Título} & \textbf{Descripción} \\ % \hhline{|=|=|}
+		\textbf{1. Nombre} & El nombre debe ser una frase verbal corta que represente el objetivo del caso de uso. \\
+		1.1 Código & Código indentificados del caso de suso \\
+		1.2 Breve descripción & Una frase más amplia acerca del objetivo. \\
+		1.3 Actor principal & El nombre del rol del actor principal o su descripción. \\
+		1.4 Disparadores & Que evento comienza el caso de uso (puede ser un timer). \\ \hline
+		\textbf{2. Flujo de eventos} &  \\
+		2.1 Flujo básico & Pasos del escenario. Desde que es disparado hasta que alcanza su objetivo (caso feliz) \\
+		2.2 Flujo alternativo & Pasos alternativos al flujo básico. Se debe hacer referencia a que paso del flujo principal es la alternativa. \\ \hline
+		\textbf{3. Requerimientos especiales} & \\ \hline
+		\textbf{4. Pre-Condiciones} & Condiciones que deben estar presentes para que se pueda iniciar el caso de uso. \\ \hline
+		\textbf{5. Post-Condiciones} & Condiciones que deben estar presentes para que se pueda finalizar el caso de uso. \\ \hline
+	\end{tabular}
+	
+\end{table}
+
+
+\stepcounter{reqCounter}
+
+
+
+\begin{table}[h!]
+	\caption{Caso de Uso: Monitoreo de la Calidad del Aire [\CODrequerimiento\mytwodigits{\value{reqCounter}}]}
+	\centering
+	\begin{tabular}{ | m{4.0cm} | m{10cm} | }
+		\hline
+		\rowcolor{gray!50} % Coloring the first row
+		\textbf{Título} & \textbf{Descripción} \\ % \hhline{|=|=|}
+		\textbf{1. Nombre} & \textbf{Monitoreo de la Calidad del Aire} \\  
+		1.1 código &\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]} \\
+		1.2 Breve descripción & Monitoreo continuo de los niveles de MP2,5 en atmósferas urbanas. \\
+		1.3 Actor principal & Autoridades ambientales, gobiernos locales o científicos. \\
+		1.4 Disparadores & Inicio automático al encender el dispositivo o a intervalos programados. \\ \hline
+		\textbf{2. Flujo de eventos} &  \\
+		2.1 Flujo básico & 
+		\begin{enumerate}
+			\item El dispositivo se enciende.
+			\item Los sensores comienzan a medir los niveles de MP2,5.
+			\item Los datos se recopilan y analizan en tiempo real.
+			\item Se muestra la información de calidad del aire en la interfaz del usuario.
+			\item Los datos se almacenan para análisis futuros.
+		\end{enumerate} \\
+		2.2 Flujo alternativo & 
+		\begin{itemize}
+			\item Si un sensor falla, se activa una alerta y se pasa a los sensores redundantes.
+			\item Si los niveles de MP2,5 exceden un umbral seguro, se envía una alerta a las autoridades.
+		\end{itemize} \\ \hline
+		\textbf{3. Requerimientos especiales} & Capacidad de funcionar en diversas condiciones ambientales urbanas. \\ \hline
+		\textbf{4. Pre-Condiciones} & Todos los sensores deben estar calibrados y funcionando correctamente. \\ \hline
+		\textbf{5. Post-Condiciones} & Los datos de calidad del aire deben estar actualizados y disponibles para su revisión. \\ \hline
+	\end{tabular}
+	
+\end{table}
+
+\stepcounter{reqCounter}
+
+\begin{table}[h!]
+		\caption{Caso de Uso: Mantenimiento y Calibración de Sensores [\CODrequerimiento\mytwodigits{\value{reqCounter}}]}
+	\centering
+	\begin{tabular}{ | m{4.0cm} | m{10cm} | }
+		\hline
+		\rowcolor{gray!50} % Coloring the first row
+		\textbf{Título} & \textbf{Descripción} \\ % \hhline{|=|=|}
+		\textbf{1. Nombre} & Mantenimiento y Calibración de Sensores \\
+		1.1 código &\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]} \\
+		1.2 Breve descripción & Proceso regular de mantenimiento y calibración de los sensores de MP2,5 para asegurar la precisión y exactitud de las mediciones. \\
+		1.3 Actor principal & Técnicos de mantenimiento. \\
+		1.4 Disparadores & Programación regular de mantenimiento o detección de un error en el sensor. \\ \hline
+		\textbf{2. Flujo de eventos} &  \\
+		2.1 Flujo básico & 
+		\begin{enumerate}
+			\item El técnico inicia el proceso de mantenimiento.
+			\item Se realizan pruebas de diagnóstico para evaluar el estado de los sensores.
+			\item Se limpian y ajustan los sensores según sea necesario.
+			\item Se calibran los sensores para asegurar mediciones precisas.
+			\item Se registra el mantenimiento en el sistema.
+			\item Se realiza una prueba final para confirmar el funcionamiento adecuado de los sensores.
+		\end{enumerate} \\
+		2.2 Flujo alternativo & 
+		\begin{itemize}
+			\item Si se detecta un fallo en un sensor durante el mantenimiento, se procede a su reparación o reemplazo.
+			\item Si no se puede calibrar un sensor correctamente, se marca para su revisión o reemplazo.
+		\end{itemize} \\ \hline
+		\textbf{3. Requerimientos especiales} & Herramientas y equipos específicos para la calibración y el mantenimiento de los sensores. \\ \hline
+		\textbf{4. Pre-Condiciones} & El equipo de mantenimiento debe estar disponible y los sensores deben ser accesibles. \\ \hline
+		\textbf{5. Post-Condiciones} & Los sensores deben estar calibrados correctamente y funcionando según las especificaciones. \\ \hline
+	\end{tabular}
+
+\end{table}
+
+\stepcounter{reqCounter}
+
+
+\begin{table}[h!]
+	\caption{Caso de Uso: Consulta y Gestión de Datos Almacenados [\CODrequerimiento\mytwodigits{\value{reqCounter}}]}
+	\centering
+	\begin{tabular}{ | m{4.1cm} | m{10cm} | }
+		\hline
+		\rowcolor{gray!50} % Coloring the first row
+		\textbf{Título} & \textbf{Descripción} \\ % \hhline{|=|=|}
+		\textbf{1. Nombre} & \textbf{Consulta y Gestión de Datos Almacenados} \\
+		1.1 código &\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]} \\
+		1.2 Breve descripción & Acceso y manejo de los datos de calidad del aire almacenados en el sistema. \\
+		1.3 Actor principal & Operadores de sistema, analistas de datos. \\
+		1.4 Disparadores & La necesidad de revisar o liberar espacio en la memoria del sistema. \\ \hline
+		\textbf{2. Flujo de eventos} &  \\
+		2.1 Flujo básico & 
+		\begin{enumerate}
+			\item El usuario solicita acceso a los datos almacenados.
+			\item El sistema presenta las opciones de consulta y gestión de datos.
+			\item El usuario selecciona la acción deseada (por ejemplo, revisar datos, descargar o borrar).
+			\item El sistema ejecuta la acción y proporciona una respuesta adecuada.
+		\end{enumerate} \\
+		2.2 Flujo alternativo & 
+		\begin{itemize}
+			\item Si el espacio de almacenamiento está casi lleno, el sistema notifica al usuario y sugiere la descarga o eliminación de datos antiguos.
+		\end{itemize} \\ \hline
+		\textbf{3. Requerimientos especiales} & El equipo debe contar con suministro eléctrico. En caso que la consulta sea remota, se requiere que el equipo esté conectado a internet \\ \hline
+		\textbf{4. Pre-Condiciones} & 
+		\begin{itemize}
+			\item El sistema debe estar operativo y accesible.
+			\item Debe haber datos almacenados en el sistema.
+		\end{itemize} \\ \hline
+		\textbf{5. Post-Condiciones} & 
+		\begin{itemize}
+			\item Los datos deben haber sido consultados, descargados o borrados según la elección del usuario.
+			\item El sistema debe mantener un registro de las acciones realizadas.
+		\end{itemize} \\ \hline
+	\end{tabular}
+	
+\end{table}
+
+\end{document}

@@ -1,0 +1,808 @@
+\documentclass[
+11pt, % The default document font size, options: 10pt, 11pt, 12pt
+codirector, % Uncomment to add a codirector to the title page
+]{charter} 
+\usepackage{enumitem}
+\usepackage{pdflscape}
+\usepackage{tikz}
+%\usetikzlibrary{shapes,arrows}
+%\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, backgrounds, fit}
+\usepackage{fontawesome5}
+\usepackage{tikz,tkz-tab}
+\usepackage{booktabs} % Para tablas más elegantes
+\usetikzlibrary{positioning, arrows.meta, backgrounds, fit}
+
+\usetikzlibrary{matrix,arrows, positioning,shadows,shadings,backgrounds, calc, shapes, tikzmark}
+
+\usepackage{fmtcount}
+
+\makeatletter
+\newcommand{\mytwodigits}[1]{\two@digits{#1}}
+\makeatother
+
+\newcounter{reqCounter}
+\setcounter{reqCounter}{0}
+
+
+% Completar los siguintes Campos
+\materia{Ingeniería de Software}
+\bimestre{tercer bimestre}
+\docentes{Alejandro Permingeat; Esteban	Volentini; Mariano Finochietto y Santiago Salamandri}
+\titulo{Requerimientos  \bigskip para el Software MADCASE}
+\posgrado{Carrera de Especialización en Sistemas Embebidos} 
+\autor{Mg. Luis Alberto Gómez Parada} 
+\director{Ing. Juan Manuel Cruz}
+\pertenenciaDirector{FIUBA} 
+\codirector{} 
+\pertenenciaCoDirector{}
+\cliente{}
+\empresaCliente{Centro del Clima y la Resiliencia CR2, Universidad de Chile}
+\fechaINICIO{5 de noviembre de 2023}		%Fecha de entrega
+\CODrequerimiento{MADCASE-RS01-REQ}
+
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\newpage
+
+\section*{Registros de cambios}
+\label{sec:registro}
+
+
+\begin{table}[ht]
+	\label{tab:registro}
+	\centering
+	\begin{tabularx}{\linewidth}{@{}|c|X|c|@{}}
+		\hline
+		\rowcolor[HTML]{C0C0C0} 
+		Revisión & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}Detalles de los cambios realizados} & Fecha      \\ \hline
+		0      & Creación del documento                                 &\fechaInicioName \\ \hline
+		\hline
+		
+	\end{tabularx}
+	\label{sec:cierre}
+\end{table}
+
+\pagebreak
+
+
+\section{Introducción}
+\label{sec:org60390fa}
+
+%En esta sección se proporcionará una introducción a todo el documento de Especificación de Requisitos Software(ERS). Consta de varias subsecciones: propósito, ámbito del sistema, definiciones, referencias y visión general del documento.
+
+
+\subsection{Propósito}
+\label{sec:org434c3ef}
+
+%En esta subsección se definirá el propósito del documento ERS y se especificará a quien va dirigido.
+
+El objetivo principal de este Documento de Especificación de Requisitos del Sistema (ERS) es definir los requisitos técnicos necesarios para el desarrollo del software de un dispositivo de medición de partículas finas (MP2,5) en atmósferas contaminadas. La solución propuesta busca mejorar la precisión y exactitud de los sensores ópticos de bajo costo actuales, implementando técnicas estadísticas de muestreo y algoritmos numéricos. El monitoreo de alta precisión y exactitud es de especial relevancia para autoridades ambientales nacionales y gobiernos locales, quienes constituyen los principales usuarios potenciales de este producto.
+
+
+\subsection{Ámbito del sistema}
+\label{sec:org12e44a1}
+
+\begin{itemize}
+	\item Este software se denominará comercialmente como \textbf{MADCASE} (Micro Administración de Datos de Calidad del Aire en Sistemas Embebidos).
+	
+	%Se explicará lo que el sistema hará y lo que no hará.
+	\item \textbf{MADCASE} facilitará cálculos en tiempo real de las concentraciones de MP2,5, el monitoreo del estado de sensores, emitiendo alertas ante fallos y la transmisión de datos, la administración de formatos de la información y manejo de registros asociados a la medición o datos generados. No obstante, post-pruebas no se considera mantenimiento, actualizaciones, ni formación para usuarios. En conclusión, el software está diseñado para funcionalidad inmediata y fiabilidad, pero sin soporte continuo o expansión post-proyecto.
+	
+	% Se describirán los beneficios, objetivos y metas que se espera alcanzar con el futuro sistema.
+	\item El propósito es desarrollar una solución económica y confiable que pueda integrarse en sistemas de monitoreo de calidad del aire de bajo costo, equipados con sensores redundantes de MP2.5. Con ello, se busca mejorar significativamente la calidad y cantidad de la información registrada, lo cual se espera que tenga un impacto positivo en la salud pública de entornos urbanos.
+
+	
+	%\item Se referenciarán todos aquellos documentos de nivel superior (p.e en Industria de sistemas, que incluyen hardware y software, deberían mantenerse la consistencia con el documento de especificaciones de requisitos globales del sistema, si existe)
+	\item Hasta la fecha no existe un único estándar internacional universalmente aceptado para el manejo y almacenamiento de datos de calidad del aire. Sin embargo, hay varias directrices y estándares desarrollados por diferentes organizaciones y agencias que son ampliamente reconocidos y utilizados a nivel internacional. Algunos de estos incluyen:
+	
+	\begin{itemize}
+		\item \textbf{Organización Mundial de la Salud (OMS)}: la OMS proporciona directrices sobre los niveles de calidad del aire que se consideran seguros para la salud humana. Estas directrices son referencias clave para muchos países al establecer sus propios estándares nacionales.
+		\item \textbf{Agencia de Protección Ambiental de Estados Unidos (EPA)}: la EPA ha desarrollado estándares de calidad del aire y metodologías para el monitoreo y reporte de contaminantes atmosféricos que son seguidos por varios países, especialmente en América del Norte.
+		\item \textbf{Unión Europea (UE)}: la UE tiene sus propias directivas para la calidad del aire, que establecen límites para varios contaminantes y requieren que los estados miembros monitoreen y reporten la calidad del aire.
+		\item \textbf{Organización Internacional de Normalización (ISO)}: la ISO tiene varias normas relacionadas con la calidad del aire, incluyendo aspectos de medición y análisis de contaminantes específicos.
+		\item \textbf{Convenio de Aarhus sobre el Acceso a la Información, la Participación Pública en la Toma de Decisiones y el Acceso a la Justicia en Asuntos Ambientales}: este tratado internacional, aunque no es específicamente sobre calidad del aire, establece principios importantes sobre el acceso a la información ambiental, lo que puede incluir datos sobre calidad del aire.
+	\end{itemize} 
+\end{itemize}
+
+
+\subsection{Definiciones, Acrónimos y Abreviaturas}
+\label{sec:orgb158e36}
+
+En esta subsección se definen todos los términos, acrónimos y
+abreviaturas utilizadas en la ERS.
+
+
+\begin{tabular}{lp{13cm}}
+	\toprule
+	\textbf{Abreviatura}	& \textbf{Descripción}  \\
+    \midrule
+    
+    	IoT & Internet de las Cosas (IoT) conecta dispositivos cotidianos a Internet, permitiéndoles comunicarse y compartir datos, mejorando la eficiencia, la comodidad y el análisis de datos. \\
+
+		IP65 & Estándar que indica protección total contra polvo y resistencia a chorros de agua de baja presión, adecuado para equipos eléctricos que no requieren inmersión en agua. \\
+		
+		ISO 8601 & Estándar internacional para la representación de fechas y horas, promoviendo la consistencia y claridad en la comunicación global, especialmente en el intercambio de datos electrónicos. \\    
+		    
+		MADCASE & Micro Administración de Datos de Calidad del Aire en Sistemas Embebidos es un software para microprocesadores que permite la gestión de datos de calidad del aire, enfocado en la recopilación y análisis precisos de información ambiental \\
+		
+		MP2,5 & Material Particulado Fino Respirable son micropartículas atmosféricas con un diámetro menor a 2.5 micrómetros de diámetro aerodinámico. Son peligrosas para la salud, ya que pueden penetrar en los pulmones y el torrente sanguíneo de las personas.\\
+		
+		RTC & Real-Time Clock, es un reloj de computadora que mantiene un seguimiento preciso del tiempo actual, incluso cuando la energía principal está apagada, utilizando una batería independiente. \\
+		
+		SI & El Sistema Internacional de Unidades, es un sistema de medida universal adoptado globalmente, basado en siete unidades básicas como el metro, kilogramo y segundo, para garantizar consistencia y claridad en mediciones. \\
+		\bottomrule
+
+\end{tabular}
+
+
+\subsection{Referencias}
+\label{sec:org62711e0}
+
+%En esta subsección se mostrará una lista completa de todos los
+%documentos referenciados en la ERS
+
+\begin{enumerate}
+	\item World Health Organization. (2021). \textit{WHO global air quality guidelines: particulate matter (PM2.5 and PM10), ozone, nitrogen dioxide, sulfur dioxide and carbon monoxide executive summary}. Recuperado de \url{https://www.who.int/publications/i/item/9789240034433}
+	\item United States Environmental Protection Agency. (2016). \textit{Quality Assurance Guidance
+		Document 2.12 - Monitoring PM2.5 in Ambient Air Using Designated Reference or
+	Class I Equivalent Methods}. Recuperado de \url{https://www.epa.gov/sites/default/files/2021-03/documents/p100oi8x.pdf}
+	\item European Commission. (2019). \textit{Air quality standards}. Recuperado de \url{https://ec.europa.eu/environment/air/quality/standards.htm}
+	\item European Commission. (2018). \textit{Data and reporting}. Recuperado de
+	\url{https://environment.ec.europa.eu/topics/air/air-quality/data-and-reporting_en}
+	\item International Organization for Standardization. (2019). \textit{ISO 16000-37:2019 Indoor air — Part 37: Measurement of PM2,5 mass concentration}. Recuperado de \url{https://www.iso.org/standard/66283.html}
+	\item United Nations Economic Commission for Europe. (1998). \textit{Convention on Access to Information, Public Participation in Decision-making and Access to Justice in Environmental Matters}. Recuperado de \url{https://unece.org/environment-policy/public-participation/aarhus-convention/text}
+	\item Ministerio Del Medio Ambiente, Gobierno de Chile (2011)
+	Recuperado de
+	\textit{Decreto 12, Establece Norma Primaria De Calidad Ambiental Para Material Particulado Fino Respirable MP2,5} 
+	\url{https://bcn.cl/2fegn}
+\end{enumerate}
+
+
+\subsection{Visión general del documento}
+\label{sec:orgdaca22c}
+
+%Esta subsección describe brevemente los contenidos y la organización del resto de la ERS.
+Este documento se realiza siguiendo el estándar IEEE Std. 830-1998
+
+
+
+
+\section{Descripción general del documento}
+\label{sec:orgc1c4017}
+
+%En esta sección se describen todos aquellos factores que afectan al producto y a sus requisitos. No se describen los requisitos, sino su contexto. Esto permitirá definir con detalle los requisitos en la sección 3, haciendo que sean más fáciles de entender.
+
+%Normalmente, esta sección consta de las siguientes subsecciones: Perspectiva del producto, funciones del producto, características de los usuarios, restricciones, factores que se asumen y futuros requisitos.
+
+
+\subsection{Perspectiva del producto}
+\label{sec:org24980a8}
+
+% Esta subsección debe relacionar el futuro sistema (productovsoftware) con otros productos. Si el producto es totalmente independiente de otros productos, también debe especificarse aquí. Si la ERS define un producto que es parte de un sistema mayor, esta subsección relacionará los requisitos del sistema mayor con la funcionalidad del producto mayor y el producto aquí descripto. Se recomienda utilizar diagramas de bloques.
+
+La perspectiva del producto en el contexto de sistemas de monitoreo de calidad del aire se puede describir de la siguiente manera:
+
+\begin{description}
+	\item[Interconexión con sistemas existentes:] será diseñado para operar tanto de manera autónoma como en sinergia con otros sistemas y redes de monitoreo de calidad del aire. Se espera que la capacidad para almacenar y transmitir datos facilite la integración del instrumento con plataformas de análisis de datos más amplias, usadas por entidades gubernamentales y centros de investigación.
+	
+	\item[Complementariedad con tecnologías de alto costo:] aunque utiliza sensores de bajo costo para medir MP2,5, se espera que complemente tecnologías analíticas avanzadas. Su accesibilidad y análisis estadístico en tiempo real deben ofrecen una solución viable para zonas con limitaciones presupuestarias.
+
+	\item[Parte de un sistema mayor de gestión ambiental:] se concibe como un elemento esencial en redes de monitoreo para la gestión de la calidad del aire urbano. La información que provee será valiosa para reforzar políticas públicas, planes de descontaminación y estrategias de salud pública.
+
+	\item[Independencia y modularidad:] asi bien cuenta con la capacidad de integrarse con otros sistemas, destaca por su independencia y modularidad, permitiendo su despliegue en diversas configuraciones (en red, equipo único, fuera de linea, etc.), adaptadas a las necesidades específicas de cada entorno urbano.
+
+
+
+\end{description}
+
+
+\subsection{Funciones del producto}
+\label{sec:orgaf51da6}
+
+%En esta subsección de la ERS se mostrará un resumen, a grandes
+%rasgos, de las funciones del futuro sistema, por ejemplo, en una ERS
+%para un programa de contabilidad, esta subsección mostrará que el
+%sistema soportará el mantenimiento de cuentas, mostrará el estado de
+%las cuentas y facilitará la facturación, sin mencionar el enorme
+%detalle que cada una de estas funciones requiere.
+%
+%Las funciones deberán mostrarse de forma organizada, y pueden
+%utilizarse gráficos, siempre y cuando dichos gráficos reflejen las
+%relaciones entre funciones y no el diseño del sistema.
+
+Este segmento de la Especificación de Requisitos del Software (ERS) proporciona un resumen esquemático de las funcionalidades clave del sistema propuesto. A continuación se detallan las principales funciones del sistema de monitoreo de calidad del aire:
+
+\begin{description}
+	\item[Muestreo de contaminantes:] el sistema estará equipado con tres sensores de MP2,5 que se encargan de medir y registrar las concentraciones de partículas finas en el aire.
+	
+	\item[Cálculo de concentración:] el sistema será capaz de estimar la concentración de MP2,5 promedio y su precisión, mediante procesamiento numérico estadístico. Este proceso se llevara a cabo dentro del microprocesador.
+	
+	\item[Marca temporal de mediciones:] a partir de la integración los datos suministrados por el RTC, el sistema incorporará a cada dato de contaminantes, una estampa de tiempo, lo que es crucial para el análisis temporal y comparación de la calidad del aire con otros monitores.
+
+	\item[Almacenamiento de datos:] cada medición capturada por los sensores, o calculada por el microprocesador, se almacenará de manera local en un sistema de almacenamiento de datos integrado. Esto busca disminuir el riesgo de perdida información relevante.
+
+	\item[Transmisión de datos:] el sistema incluye una funcionalidad de transmisión de datos que permite enviar las mediciones almacenadas a un servidor remoto para su posterior análisis y gestión. Esto facilita el monitoreo del equipo y la integración de los datos en redes de calidad de aire.
+
+	\item[Gestión de Energía:] El sistema es compatible con la red eléctrica y cuenta con una fuente de poder dedicada, asegurando su funcionamiento continuo y estable.
+	
+\end{description}
+
+La figura \ref{fig:diagBloques} ilustra la forma en que los bloques de componentes del instrumento interactuarán entre sí. Se destaca la relación y flujo de información, sin profundizar en aspectos de diseño técnico.
+
+		\begin{figure}[htpb]
+	\centering
+	\shorthandoff{<>} % Desactivar caracteres problemáticos
+	\begin{tikzpicture}[ node distance=0.55cm]
+	% Nodes
+	\node (microcontroller) 
+	[draw, rectangle, fill=blue!10!white, align=center] 						
+	{\textbf{Microcontrolador}\\ \rotatebox{90}{\faMicrochip}};  
+	
+	\node (sensor1) 		
+	[above right=of microcontroller, draw, rectangle, fill=red!10!white, align=center, yshift=0.2cm, xshift=0.3cm] 	
+	{Sensor de\\MP2,5 \faSmog};
+	
+	\node (sensor2) 		
+	[right=of microcontroller, draw, rectangle, fill=red!10!white, align=center] 		
+	{Sensor de\\MP2,5 \faSmog};
+	
+	\node (sensor3) 		
+	[below right=of microcontroller, draw, rectangle, fill=red!10!white, align=center, , yshift=-0.2cm, xshift=0.3cm] 	
+	{Sensor de\\MP2,5 \faSmog};
+	
+	\node (storage) 		
+	[below=of microcontroller, draw, fill=yellow!10!white, rectangle, align=center] 		
+	{Sistema de \\ almacenamiento  \faSdCard }; % \faDatabase
+	
+	\node (transmission) 	
+	[above=of microcontroller, draw, rectangle, align=center] 		
+	{Sistema de transmi-\\sión de datos  \faSignal};
+	
+	\node (rtc) 			
+	[above left=of microcontroller, draw, rectangle, align=center, yshift=-1.5cm, xshift=-.33cm]  
+	{RTC \faClock[regular]};
+	
+	\node (power) 			
+	[below left=of microcontroller, draw, rectangle, align=center,yshift=-0.2cm, xshift=0.0cm] 	
+	{Fuente de\\alimentación \faBatteryQuarter};
+	
+	\node (cabinet) 		[above right=of transmission,  xshift=-6.4cm,yshift=-0.7cm]     {\textbf{Gabinete} \faCloudSunRain};
+	
+	% Bounding Box
+	\begin{scope}[on background layer]
+	\node[fill=gray!10,  draw, rectangle, rounded corners, fit=(cabinet) (sensor1) (rtc) (power) (transmission)] {};
+	\end{scope}
+	
+	% Arrows
+	\draw[<->] (microcontroller) -- (sensor1);
+	\draw[<->] (microcontroller) -- (sensor2);
+	\draw[<->] (microcontroller) -- (sensor3);
+	\draw[<->] (microcontroller) -- (storage);
+	\draw[<->] (microcontroller) -- (transmission);
+	\draw[->] (rtc) -- (microcontroller);
+	\draw[->] (power) -- (microcontroller);
+	\end{tikzpicture}
+	%	\shorthandon{<>} % Reactivar caracteres problemáticos
+	\caption{Esquema de bloques del instrumento.}
+	\label{fig:diagBloques}
+\end{figure}
+
+Estos bloques forman la base operativa del sistema de monitoreo de calidad del aire, proporcionando un enfoque general para la detección y gestión de datos de MP2,5.
+
+
+\subsection{Características de los usuarios}
+\label{sec:orga40b0ee}
+
+%Esta subsección describirá las características generales de los
+%usuarios del producto, incluyendo nivel educacional, experiencia y
+%experiencia técnica.
+
+\begin{description}
+	\item [Cliente:] doctora en Química Ambiental especializada en monitoreo de calidad del aire. Actualmente lidera proyectos de relevancia nacional en Chile, como Fodequip Mayor y Fodecyt, enfocados en la implementación y evaluación de sensores de bajo costo para el monitoreo ambiental. Se espera su aporte en cuanto a definir características y requerimientos necesarios para un instrumental orientado a estimar las concentraciones de MP2,5.
+	%	\item Auspiciante: es riguroso y exigente con la rendición de gastos. Tener mucho cuidado con esto.
+	%	\item Equipo: Juan Perez, suele pedir licencia porque tiene un familiar con una enfermedad. Planificar considerando esto.
+	\item [Orientador:] ingeniero electrónico con amplia experiencia tanto en el ámbito profesional como en la docencia. Su contribución será fundamental en el diseño de la placa electrónica que soportará el instrumental y en la optimización de la programación del microcontrolador.
+	
+	\item [Usuario final:] el usuario final está constituido principalmente por la población urbana expuesta a episodios de contaminación atmosférica relacionados con MP2,5. Estos episodios son especialmente prevalentes durante ciertos días de invierno y pueden representar un riesgo significativo para la salud de grupos vulnerables, como niños, ancianos y personas con enfermedades preexistentes.
+\end{description}
+
+
+\subsection{Restricciones}
+\label{sec:org5ca5790}
+
+%Esta subsección describirá aquellas limitaciones que se imponen sobre los desarrolladores del producto.
+
+\begin{description}
+	\item[Políticas de la empresa:] los resultados requerirán una precisión igual o superior a los sensores de bajo costo.
+	\item[Limitaciones del hardware:] el sistema deberá soportar lluvia y temperatura bajo 0 °C.
+	\item[Interfaces con otras aplicaciones:] debe ser capaz de comunicarse con un servidor remoto.
+	\item[Operaciones paralelas:] deberá gestionar los datos de al menos 3 sensores de MP2,5 simultáneamente.
+	\item[Funciones de auditoría:] deberá chequear el estado de los sensores, identificando si están encendidos o apagados, y detectar si el funcionamiento de alguno de los sensores, entrega valores fuera de rango o anómalos.
+	\item[Funciones de control:] debe verificar la desviación del RTC con el tiempo real (GMT).
+	\item[Lenguaje(s) de programación:] debe programarse en algún lenguaje compatible con sistemas embebidos, por ejemplo, C.
+	\item[Protocolos de comunicación:] debe contar con algún protocolo de comunicación estandar con el servidor remoto.
+	\item[Requisitos de habilidad:] debe ser capaz de trabajar con datos decimales.
+	\item[Criticalidad de la aplicación:] debe ser capaz de gestionar los datos en caso de corte de luz.
+\end{description}
+
+
+\subsection{Suposiciones y dependencias}
+\label{sec:org0ae23fe}
+
+%Esta subsección de la ERS describirá aquellos factores que, si
+%cambian, pueden afectar a los requisitos. Por ejemplo, los
+%requisitos pueden presuponer una cierta organización de ciertas
+%unidades de la empresa, o pueden presuponer que  el sistema correrá
+%sobre cierto sistema operativo. Si cambian dichos detalles en la
+%organización de la empresa, o si cambian ciertos detalles técnicos,
+%como el sistema operativo, puede ser necesario revisar y cambiar los
+%requisitos. 
+
+En el marco de la especificación de requisitos del sistema, se asume que la implementación de tres sensores ópticos para la medición de partículas finas (MP2,5) proporcionará un conjunto de datos replicados que permitirán realizar análisis estadísticos precisos en tiempo real. Se presupone que esta configuración aumentará el volumen de muestreo, lo que se traduce en una mejora en la precisión y exactitud de las mediciones, así como en la reducción del error estándar. Además, se considera que la presencia de múltiples sensores ofrecerá una mayor robustez al sistema, permitiendo una detección anticipada de fallos y una respuesta efectiva a posibles anomalías.
+
+Cabe destacar que estos supuestos se basan en la continuidad de ciertas condiciones técnicas y operativas. Cambios significativos en el entorno tecnológico, como la introducción de nuevos tecnologías de sensores ópticos, o alteraciones en la configuración de la red de monitoreo, podrían requerir una revisión de los requisitos. Los cambio en las especificaciones técnicas tanto de los sensores como las normas de medición afectaría los supuestos, lo que podría conllevar una necesaria reevaluación y adaptación de los requisitos establecidos.
+
+
+\subsection{Requisitos futuros}
+\label{sec:org33cfcdb}
+
+\begin{description}
+	\item[Integración con IoT:] la capacidad para integrar los sensores con una red de Internet de las Cosas (IoT) es fundamental para la automatización y una monitorización más extensa. La infraestructura para IoT está cada vez más accesible y puede implementarse con relativa facilidad.
+	
+	\item[Mejora de la interfaz de usuario y visualización de datos:] desarrollar una interfaz más intuitiva y sistemas de visualización avanzados, es esencial para que los usuarios finales puedan analizar e interpretar los datos eficientemente. Estas mejoras son principalmente del lado del software, lo que puede facilitar su implementación.
+	
+	\item[Actualizaciones y mantenimiento remoto:] la capacidad de actualizar el software del sistema y realizar mantenimientos de forma remota es crucial para minimizar los tiempos de inactividad y asegurar que el sistema esté siempre actualizado con las últimas mejoras y correcciones de seguridad. Implementar esta capacidad  puede aportar beneficios significativos a largo plazo.
+\end{description}
+
+
+\section{Requisitos específicos}
+\label{sec:org40573d1}
+
+
+%Esta sección contiene los requisitos a un nivel de detalle suficiente
+%como para permitir a los diseñadores diseñar un sistema que
+%satisfaga estos requisitos, y demuestren si el sistema satisface, o
+%no, los requisitos. Todo requisito aquí especificado describirá
+%comportamientos externos del sistema, perceptibles por parte de los
+%usuarios, operadores y otros sistemas. Esta es la sección más larga
+%e importante de la ERS. Deberán aplicarse los siguientes principios:
+%
+%\begin{itemize}
+%\item El documento debería ser perfectamente legible por personas de muy
+%distintas formaciones e intereses.
+%
+%\item Deberán referenciarse aquellos documentos relevantes que poseen
+%alguna influencia sobre los requisitos.
+%
+%\item Todo requisito deberá ser unívocamente identificable mediante algún
+%código o sistema de numeración adecuado.
+%
+%\item Lo ideal, aunque en la práctica no siempre realizable, es que los
+%requisitos posean las siguientes características: 
+%
+%\begin{itemize}
+%\item \textbf{Corrección:} La ERS es correcta si y sólo si todo requisito que
+%figura aquí(y que será implementado en el sistema) refleja alguna
+%necesidad real. La corrección de la ERS implica que el sistema
+%implementado será el deseado.
+%
+%\item \textbf{No ambiguos:} Cada requisito tiene una sola interpretación. Para
+%eliminar la ambigüedad inherente a los requisitos expresados en
+%lenguaje natural, se deberán utilizar gráficos o notaciones
+%formales. En el caso de utilizar términos que, habitualmente,
+%poseen más de una interpretación, se definirán con precisión en
+%glosario.
+%
+%\item \textbf{Completos:} Todos los requisitos relevantes han sido incluidos en
+%la ERS. Conviene incluir todas las posibles respuestas del sistema
+%a los datos de entrada, tanto validos como no válidos.
+%
+%\item \textbf{Consistentes:} Los requisitos no pueden ser contradictorios. Un
+%conjunto de requisitos contradictorios no es implementable.
+%
+%\item \textbf{Clasificados:} Normalmente, no todos los requisitos son igual de
+%importantes. Los requisitos pueden clasificarse por importancia
+%(esenciales, condicionales u opcionales) o por estabilidad (cambios
+%que se espera que afecten al requisito). Esto sirve, ante todo,
+%para no emplear excesivos recursos en implementar requisitos no
+%esenciales.
+%
+%\item \textbf{Verificables:} La ERS es verificalble si y sólo si todos sus
+%requisitos son verificables. Un requisito es verificable
+%(testeable) si existe un proceso finito y no costoso para
+%demostrar que el sistema cumple con el requisito. Un requisito
+%ambiguo no es, en general, verificable. Expresiones como a veces,
+%bien, adecuado, etc introducen ambigüedad en los
+%requisitos. Requisitos como "en caso de accidente la nube tóxica
+%no se extenderá más allá de 25km" no es verificable por el alto
+%costo que conlleva.
+%
+%\item \textbf{Modificables:} La ERS es modificable si y sólo si se encuentra
+%estructurada de forma que los cambios a los requisitos puedan
+%realizarse de forma fácil, completa y consistente. La utilización
+%de herramientas automáticas de gestión de requisito (por ejemplo
+%RequisitePro o Doors) facilitan enormemente esta tarea.
+%
+%\item \textbf{Trazables:} La ERS es trazable si se conoce el origen de cada
+%requisito y facilita la referencia de cada requisito a los
+%componentes y de la implementación. La trazabilidad hacia atrás
+%indica el origen (documento, persona, etc) de cada requisito. La
+%trazabilidad hacia delante de un requisito R indica qué
+%componentes del sistema son los que realizan el registro R.
+%\end{itemize}
+%\end{itemize}
+
+
+\subsection{Interfaces externas}
+\label{sec:orgfd5391f}
+
+%Se describirán los requisitos que afecten a la interfaz de usuario,
+%interfaz con otros sistemas (hardware y software) e interfaces de comunicaciones.
+
+\begin{description}
+	\stepcounter{reqCounter}
+	\item[\textbf{[MADCASE-RS01-REQ\mytwodigits{\value{reqCounter}}]}] Se implementará un código visual de funcionamiento del equipo, mediante el parpadeo de led, ubicado en el exterior del gabinete. Esto permitirá que el usuario que se encuentre manipulado físicamente el dispositivo pueda saber, a grandes rasgos, el estado de funcionamiento del instrumento.
+	
+    \stepcounter{reqCounter}
+	\item[\textbf{[MADCASE-RS01-REQ\mytwodigits{\value{reqCounter}}]}] Los datos serán almacenados sobre una memoria remobible que permita el  acceso a los datos históricos del instrumento por operadores.
+	
+    \stepcounter{reqCounter}
+	\item[\textbf{[MADCASE-RS01-REQ\mytwodigits{\value{reqCounter}}]}] Se implementará un protocolo de comunicación flexible para la transmisión de datos de concentración de MP2,5 entre el nodo sensor y el servidor remoto.
+
+    \stepcounter{reqCounter}
+	\item[\textbf{[MADCASE-RS01-REQ\mytwodigits{\value{reqCounter}}]}] Se enviará de manera remota  alertas y notificaciones a un servidor externo. Estas alertas se dispararán por umbrales predefinidos de concentración de MP2,5 o problemas de funcionamiento de los sensores u otras partes del equipo.
+
+
+\end{description}
+
+
+
+\subsection{Funciones}
+\label{sec:org307bb59}
+
+%Esta subsección (quizás la más larga del documento) deberá
+%especificar todas aquellas acciones (funciones) que deberá llevar a
+%cabo el software. Normalmente (aunque no siempre) son aquellas
+%acciones expresables como "el sistema deberá \ldots{}" Si se considera
+%necesario, podrán utilizarse notaciones gráficas y tablas, pero
+%siempre supeditadas al lenguaje natural, y no al revés.
+%
+%Es importante tener en cuenta que, en 1983, el estándar de IEEE 830
+%establecía que las funciones deberían expresarse como una jerarquía
+%funcional (en paralelo con los DFDs propuestas por el análisis
+%estructurado). Pero el estándar de IEEE 830, en sus últimas
+%versiones, ya permite organizar esta subsección de múltiples formas,
+%y sugiere, entre otras, las siguientes:
+
+
+\begin{description}
+	
+	    \stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}] El software gestionará el funcionamiento y la lectura de al menos tres sensores de MP2,5. Considera el encendido y apagado de los sensores, los tiempos de lectura y el rescate de los datos medidos por cada sensor.
+
+	    \stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}] El sistema proporcionará funcionalidades para el almacenamiento local de datos y permitirá consultar y vaciar la memoria cuando sea necesario.
+
+	    \stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}] Procesarán y almacenará los datos relevantes sobre la memoria y de manera automática. Se calcularán parámetros estadísticos importantes como el promedio de los datos, su desviación estándar, anomalías significativas, entre otros aspectos.
+
+	    \stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}] Incluirá una estampa temporal proporcionada por el RTC a cada dato almacenado.
+
+	
+\end{description}
+
+%\begin{itemize}
+%\item Por tipos de usuarios: 
+%    Distintos usuarios poseen distintos requisitos. Para cada clase de
+%usuario que exista en la organización, se especificarán los
+%requisitos funcionales que le afecten o tengan mayor relación con
+%sus tareas.
+%\end{itemize}
+%
+%
+%\begin{itemize}
+%\item Por objetos:
+%   Los objetos son identidades del mundo real que serán reflejadas en
+%el sistema. Para cada objeto, se detallarán sus atributos y sus
+%funciones. Los objetos pueden agruparse en clases. Esta organización
+%de la ERS no quiere decir que el diseño del sistema siga el
+%paradigma de Orientación a Objetos.
+%\end{itemize}
+%
+%
+%\begin{itemize}
+%\item Por estímulos: 
+%  Se especificarán los posibles estímulos que recibe el sistema y las
+%funciones relacionadas con dicho estímulo.
+%\end{itemize}
+%
+%
+%\begin{itemize}
+%\item Por jerarquía funcional: 
+%   Si ninguna de las anteriores alternativas resulta de ayuda, la
+%funcionalidad del sistema se especificará como una jerarquía de
+%funciones que comparten entradas, salidas o datos internos. Se
+%detallarán las funciones (entrada, proceso, salida) y las
+%subfunciones del sistema. Esto no implica que el diseño del sistema
+%deba realizarse según el paradigma de diseño estructurado.
+%\end{itemize}
+%
+%
+%Para organizar esta subsección de la ERS se elegirá alguna de las
+%anteriores alternativas, o incluso alguna otra que se considere más
+%conveniente. Deberá, eso sí, justificarse el porqué de tal elección.
+
+
+
+\subsection{Requisitos de rendimiento}
+\label{sec:org94bc543}
+
+%Se detallarán los requisitos relacionados con la carga que se espera
+%tenga que soportar el sistema. Por ejemplo, el número de terminales,
+%el número esperado de usuarios simultaneamente conectados, número de
+%transacciones por segundo que deberá soportar el sistema, etc.
+%  También, si es necesario, se especificarpán los requisitos de
+%datos, es decir, aquellos requisitos que afecten a la información
+%que se guardará en la base de datos. Por ejemplo, la frecuencia de
+%uso, las capacidades de acceso y la cantidad de registros que se
+%espera almacenar (decenas, cientos, miles o millones).
+
+	
+\begin{description}
+	
+	    \stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}] El instrumento estará equipado con al menos tres sensores de MP2,5, los cuales realizarán mediciones de manera simultánea. Esta simultaneidad se define como una diferencia temporal entre las mediciones de los sensores que no excederá un minuto.
+
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}] El sistema creará una tabla de registros que documentará el estado operativo, así como las calibraciones y ajustes realizados en el instrumento.
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}] 
+	Cada archivo de registro de concentración de MP2,5 contará con una cabecera descriptiva de los datos almacenados (metadatos), como las especificadas en el apéndice 1 del presente documento.
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}] 
+	El microprocesador generará y almacenará promedios temporales de MP2,5 de las mediciones en intervalos de 60 minutos y  de 24 horas.
+	
+	 \stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}] Administrará las variables de datos de MP2,5 con decimales, tanto en el almacenamiento, como durante las operaciones matemáticas.
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}]
+	 Rango de operación mínima de concentración del MP2,5: 0 a 500 $\mu g/m^3$ y precisión de medición: ±10\%.
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}] 
+	Implementará protocolos de comunicación que permitan una conexión inalámbrica de a lo menos 10 metros de distancia.
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}] 
+	Generará alarmas y notificaciones de funcionamiento y fallas.
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}]
+	 Se activará un modo de ahorro de energía en caso de desconexión del sistema eléctrico externo.
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}]
+	 El registro temporal estará conformado por la fecha y hora de la medición. Se utilizará el formato de fecha y hora ISO 8601 (YYYY-MM-DD HH:MM:SS).
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}]
+	 Las unidades empleadas para la concentración de MP2,5, o cualquier otra medición del parámetro ambiental, seguirá los estándares del sistema internacional de unidades (SI). Es decir, las concentraciones de MP2,5 se registrarán como microgramos por metro cúbico ($\mu g/m^3$).
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}]
+	 De acuerdo al comportamiento observado en los sensores se propondrá un periodo de calibración mínimo para cada sensor, que asegure un funcionamiento de acuerdo a los estándares que se establezca.
+	
+
+
+\end{description}
+
+\subsection{Restricciones de diseño}
+\label{sec:org49fe900}
+
+%Todo aquello que restrinja las decisiones relativas al diseño de la
+%aplicación: Restricciones de otros estándares, limitaciones del
+%hardware, etc.
+
+\begin{description}
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}]
+	 El gabinete del equipo debe contar con protección IP65.
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}]
+	El instrumento contará con una fuente de energía compatible con la red doméstica de 220V.
+	
+\end{description}
+
+
+\subsection{Atributos del sistema}
+\label{sec:orgd0babc0}
+
+%Se detallarán los atributos de calidad (las "ilities") del
+%sistema. Fiablidad, manteniblidad, portabilidad, y muy importante,
+%la seguridad. Deberá especificarse qué tipos de usuarios están
+%autorizados, o no, a realizar ciertas tareas, y cómo se
+%implementarán los mecanismos de seguridad (por ejemplo, por medio de
+%un \emph{login} y una \emph{password}).
+
+\begin{description}
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}]
+	Cada instrumento contará con un registro único identificador. 
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}]
+	Cada sensor de MP2,5 contará con un registro único identificador. 
+	
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}]
+	Identificará de manera única cada instrumento en el software para asociar correctamente los datos recolectados.
+
+\end{description}
+\subsection{Otros requisitos}
+\label{sec:org31d2978}
+
+
+
+\begin{description}
+	\stepcounter{reqCounter}
+	\item[\textbf{[\CODrequerimiento\mytwodigits{\value{reqCounter}}]}]
+	A modo de seguridad, el instrumento podrá funcionar en un modo de ahorro y por tiempo reducido, mediante una batería recargable de al menos 2000mAh.
+
+\end{description}
+
+
+\newpage
+
+
+\section{Apéndices}
+\label{sec:org75cea03}
+
+Puede contener todo tipo de información relevante para la ERS pero
+que, propiamente, no forme parte de la ERS. Por ejemplo:
+
+\begin{enumerate}
+\item Formatos de entrada/salida de datos, por pantalla o en listados.
+
+
+
+	
+	\subsubsection*{Cabecera de archivo datos de calidad del aire}
+	
+	\begin{itemize}
+	\item \textbf{Estación de monitoreo:} [nombre de la estación]
+	\item \textbf{Ubicación:} [ciudad, país]
+	\item \textbf{Latitud:} [latitud]
+	\item \textbf{Longitud:} [longitud]
+	\item \textbf{Altura:} [altura sobre el nivel del mar en metros]
+	\item \textbf{Fecha de inicio de los registros:} [AAAA-MM-DD]
+	\item \textbf{Fecha de fin de los registros:} [AAAA-MM-DD]
+	\item \textbf{Instrumento de medición:} [modelo y marca del instrumento]
+	\item \textbf{Calibración del instrumento:} [última fecha de calibración]
+	\item \textbf{Intervalo de registro:} [intervalo de tiempo entre mediciones, por ejemplo, cada hora]
+	\item \textbf{Responsable de los datos:} [nombre de la organización o individuo]
+	\item \textbf{Contacto:} [información de contacto para consultas]
+	\item \textbf{Descripción de los datos:} concentraciones de partículas MP2.5 (microgramos por metro cúbico)
+	\item \textbf{Columnas de datos:} [nombre de cada columna]
+	\item \textbf{Unidades de cada columna:} [año-mes-día hora:minuto:segundo, $\mu g/m^3$, código, texto]
+	\item \textbf{Formato de cada columna:} [YYYY-MM-DD HH:MM:SS, 0.00]
+	\item \textbf{Notas adicionales:} [cualquier otra información relevante]
+	\end{itemize}
+	
+	\textbf{Formato de los Datos:}\\
+	Fecha y Hora, Concentración MP2.5, Código de Calidad de Datos, Observaciones\\
+	YYYY-MM-DD HH:MM:SS, µg/m³, Código, Texto
+	
+	\begin{tabular}{lccc}
+		\toprule
+		Fecha y Hora           & Concentración MP2.5 (µg/m³) & Código de Calidad  & Observaciones \\
+		\midrule
+		2023-11-13 08:00:00    & 12.5                        & 1             &            \\
+		2023-11-13 09:00:00    & 15.2                        & 1             &            \\
+		% Agrega más líneas según sea necesario
+		\bottomrule
+	\end{tabular}
+	
+
+
+
+
+\item Resultados de análisis de costes.
+
+En el cuadro \ref{tab:presupuesto} se ofrece un desglose de los costos asociados a la presente tesis, todos presentados en dólares estadounidenses (USD). Los costos directos se dividen en categorías: mano de obra y honorarios (\$6.500 USD), materiales y suministros (\$888 USD), viajes y desplazamientos (\$480 USD), equipos y maquinaria (\$300 USD), y otros costos directos asociados a imprevistos (\$1.000 USD), sumando un subtotal de \$8,428 USD. Se incluyen también los costos indirectos, que comprenden arriendo y servicios públicos, con un subtotal de \$1.800 USD. El costo total estimado del proyecto es de \$10.228 USD. 
+
+\begin{table}[htpb]
+	\centering
+	\caption{Costos del proyecto de tesis.}
+	\label{tab:presupuesto}
+	\small
+	\begin{tabularx}{\linewidth}{@{}|X|c|r|r|@{}}
+		\hline
+		\rowcolor[HTML]{C0C0C0} 
+		\multicolumn{4}{|c|}{\cellcolor[HTML]{C0C0C0}COSTOS DIRECTOS} \\ \hline
+		\rowcolor[HTML]{C0C0C0} 
+		&
+		\multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}Cantidad} &
+		\multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}Valor unitario} &
+		\multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}Valor total} \\ 
+		\rowcolor[HTML]{C0C0C0} Descripción  &
+		\multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}} &
+		\multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0} \$ USD} &
+		\multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0} \$ USD} \\ \hline
+		
+		\multicolumn{4}{|c|}{\textbf{MANO DE OBRA, HONORARIOS }}\\ \hline
+		Gestión del proyecto		& \multicolumn{1}{c|}{	100	} & \multicolumn{1}{c|}{	10	} &  \multicolumn{1}{c|}{	1.000	} \\ \hline
+		Diseño general				& \multicolumn{1}{c|}{	60	} & \multicolumn{1}{c|}{	10	} &  \multicolumn{1}{c|}{	600	} \\ \hline
+		Construcción del hardware	& \multicolumn{1}{c|}{	120	} & \multicolumn{1}{c|}{	10	} &  \multicolumn{1}{c|}{	1.200	} \\ \hline
+		Diseño del firmware			& \multicolumn{1}{c|}{	110	} & \multicolumn{1}{c|}{	10	} &  \multicolumn{1}{c|}{	1.100	} \\ \hline
+		Realización de pruebas		& \multicolumn{1}{c|}{	120	} & \multicolumn{1}{c|}{	10	} &  \multicolumn{1}{c|}{	1.200	} \\ \hline
+		Ajustes finales				& \multicolumn{1}{c|}{	40	} & \multicolumn{1}{c|}{	10	} &  \multicolumn{1}{c|}{	400	} \\ \hline
+		Generación escrito de memoria y manuales	& \multicolumn{1}{c|}{	180	} & \multicolumn{1}{c|}{	10	} &  \multicolumn{1}{c|}{	1800	} \\ \hline
+		Entregas del trabajo final	& \multicolumn{1}{c|}{	40	} & \multicolumn{1}{c|}{	10	} &  \multicolumn{1}{c|}{	400	} \\ \hline
+		
+		\multicolumn{4}{|c|}{\textbf{MATERIALES Y SUMINISTROS}}\\ \hline
+		Placas de desarrollo 	& \multicolumn{1}{c|}{	4	} & \multicolumn{1}{c|}{	50	} &  \multicolumn{1}{c|}{	200	} \\ \hline
+		Reloj de tiempo real 	& \multicolumn{1}{c|}{	4	} & \multicolumn{1}{c|}{	2	} &  \multicolumn{1}{c|}{	8	} \\ \hline
+		Placa comunicación		& \multicolumn{1}{c|}{	4	} & \multicolumn{1}{c|}{	10	} &  \multicolumn{1}{c|}{	40	} \\ \hline
+		Memora flash			& \multicolumn{1}{c|}{	4	} & \multicolumn{1}{c|}{	5	} &  \multicolumn{1}{c|}{	20	} \\ \hline
+		Fuente de poder			& \multicolumn{1}{c|}{	4	} & \multicolumn{1}{c|}{	5	} &  \multicolumn{1}{c|}{	20	} \\ \hline
+		Gabinete				& \multicolumn{1}{c|}{	4	} & \multicolumn{1}{c|}{	10	} &  \multicolumn{1}{c|}{	40	} \\ \hline
+		Batería					& \multicolumn{1}{c|}{	4	} & \multicolumn{1}{c|}{	10	} &  \multicolumn{1}{c|}{	40	} \\ \hline
+		Sensor MP2.5			& \multicolumn{1}{c|}{	16	} & \multicolumn{1}{c|}{	30	} &  \multicolumn{1}{c|}{	480	} \\ \hline
+		Modem comunicación		& \multicolumn{1}{c|}{	1	} & \multicolumn{1}{c|}{	100	} &  \multicolumn{1}{c|}{	100	} \\ \hline
+		
+		
+		\multicolumn{4}{|c|}{\textbf{VIAJES Y DESPLAZAMIENTOS}}\\ \hline
+		Transporte terreno y reuniones	& \multicolumn{1}{c|}{	2	} & \multicolumn{1}{c|}{	100	} &  \multicolumn{1}{c|}{	200	} \\ \hline
+		Alojamiento terreno 			& \multicolumn{1}{c|}{	4	} & \multicolumn{1}{c|}{	50	} &  \multicolumn{1}{c|}{	200	} \\ \hline
+		Alimentación					& \multicolumn{1}{c|}{	8	} & \multicolumn{1}{c|}{	10	} &  \multicolumn{1}{c|}{	80	} \\ \hline
+		
+		\multicolumn{4}{|c|}{\textbf{EQUIPOS Y MAQUINARIA}}\\ \hline
+		Uso y compra de equipamiento& \multicolumn{1}{c|}{	3	} & \multicolumn{1}{c|}{	100	} &  \multicolumn{1}{c|}{	300	} \\ \hline
+		
+		\multicolumn{4}{|c|}{\textbf{OTROS COSTOS DIRECTOS}}\\ \hline
+		Imprevistos	($\sim$10\% del total del  proyecto)				& \multicolumn{1}{c|}{	1	} & \multicolumn{1}{c|}{	1.000	} &  \multicolumn{1}{c|}{	1.000	} \\ \hline
+		
+		\multicolumn{3}{|c|}{SUBTOTAL COSTOS DIRECTOS} & \multicolumn{1}{c|}{ 8.428 } \\ \hline
+		
+		\rowcolor[HTML]{C0C0C0} 
+		\multicolumn{4}{|c|}{\cellcolor[HTML]{C0C0C0}COSTOS INDIRECTOS} \\ \hline
+		\rowcolor[HTML]{C0C0C0} 
+		&
+		\multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}Cantidad} &
+		\multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}Valor unitario} &
+		\multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}Valor total} \\  
+		\rowcolor[HTML]{C0C0C0} Descripción  &
+		\multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}} &
+		\multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0} \$ USD} &
+		\multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0} \$ USD} \\ \hline
+		Arriendo parcial espacio	& \multicolumn{1}{c|}{	8	} & \multicolumn{1}{c|}{	100	} &  \multicolumn{1}{c|}{	800	} \\ \hline
+		Luz, agua, comunicación y calefacción	& \multicolumn{1}{c|}{	10	} & \multicolumn{1}{c|}{	100	} &  \multicolumn{1}{c|}{	1.000	} \\ \hline
+		
+		\multicolumn{3}{|c|}{SUBTOTAL COSTOS INDIRECTOS} &
+		\multicolumn{1}{c|}{1.800 } \\ \hline
+		\rowcolor[HTML]{C0C0C0}
+		\multicolumn{3}{|c|}{TOTAL} &
+		\multicolumn{1}{c|}{10.228 }
+		\\ \hline
+	\end{tabularx}%
+\end{table}
+
+\item Restricciones acerca del lenguaje de programación.
+
+Dada su amplia adopción en sistemas embebidos, eficiencia y compatibilidad con múltiples arquitecturas, se selecciona C para programar el microcontrolador, asegurando rendimiento óptimo y mantenibilidad.
+
+Dado la masibidad y la 
+
+\end{enumerate}
+\end{document}
